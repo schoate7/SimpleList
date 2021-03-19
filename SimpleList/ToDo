@@ -1,0 +1,16 @@
+Features:
+>Load and Save to file, make functions portable
+>Sorting re-id mechanism after delete.
+
+
+Code Cleanup:
+>Merge IDs?
+>Define string literals for prompts as MACROS
+>Mutable array for parent tasks
+>Mutable array in each parent of children
+>Normalize ID based on NSMutableArray index
+>Hash map?
+
+
+Issues:
+>View/diplsay only shows first child task

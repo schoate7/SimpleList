@@ -7,9 +7,10 @@
 #import <Foundation/Foundation.h>
 #import "AddTask.h"
 #import "ViewTaskList.h"
+#import "DeleteTask.h"
 
-void mainMenu(){
-    NSMutableArray *parentList = [[NSMutableArray alloc]init];
+//
+void mainMenu(NSMutableArray *parentList){
     char *usrIn = (char*)malloc(8);
     bool quitCd = false;
     NSLog(@"Main Menu:");
@@ -27,7 +28,7 @@ void mainMenu(){
                 addTask(parentList);
                 break;
             case 'D':
-                NSLog(@"Delete function to be built.");
+                deleteTask(parentList);
                 break;
             case 'V':
                 displayTaskList(parentList);
@@ -36,10 +37,12 @@ void mainMenu(){
     }
 }
 
+//Main
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         NSLog(@"Welcome to Simple Task List");
     }
-    mainMenu();
+    NSMutableArray *parentList = [[NSMutableArray alloc]init];
+    mainMenu(parentList);
     return 0;
 }

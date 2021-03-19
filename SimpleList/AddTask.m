@@ -53,7 +53,7 @@ void addChildTask(NSMutableArray *parentList){
         NSString * tDesc = getDesc();
         [matchingParent addChildTasks:newChild];
         indexId = (int)[matchingParent.childTasks indexOfObject:newChild];
-        [newChild getChildTask:tDesc taskId:indexId parentTaskId:nsIndex]; //Need to build logic for taskId and parentTaskId
+        [newChild getChildTask:tDesc taskId:indexId+1 parentTaskId:nsIndex];
     }else{
         NSLog(@"An error occurred finding parent");
     }

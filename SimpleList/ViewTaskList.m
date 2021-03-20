@@ -7,12 +7,15 @@
 #import <Foundation/Foundation.h>
 #include "Task.h"
 
+#define PARENT_LABEL @"Task ID: %@ | Description: %@"
+#define CHILD_LABEL @"Child ID: %@ | Description: %@"
+
 void displayTaskList(NSMutableArray *parent){
     for(ParentTask *task in parent){
-        NSLog(@"Task ID: %i | Description: %@", task.taskId, task.taskDesc);
+        NSLog(PARENT_LABEL, task.taskId, task.taskDesc);
         if(task.childTasks!=nil){
             for(ChildTask *ctask in task.childTasks){
-                NSLog(@"Child ID: %i | Description: %@", ctask.taskId, ctask.taskDesc);
+                NSLog(CHILD_LABEL, ctask.taskId, ctask.taskDesc);
             }
         }
     }

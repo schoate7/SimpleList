@@ -27,9 +27,10 @@ void addParentTask(NSMutableArray *parentList){
     
     [parentList addObject:newTask];
     newPID = (int)[parentList indexOfObject:newTask] + 1;
-    [newTask getParentTask:tDesc taskId:newPID];
+    NSNumber *pidNS = [NSNumber numberWithInt:newPID];
+    [newTask getParentTask:tDesc taskId:pidNS];
     
-    NSLog(@"Task ID Assigned: %i", newTask.taskId);
+    NSLog(@"Task ID Assigned: %@", newTask.taskId);
 }
 
 //Add child task off top level parent
@@ -41,9 +42,10 @@ void addChildTask(NSMutableArray *parentList){
     int nsIndex=0;
     NSLog(@"Enter the parent task ID: ");
     scanf("%i", &parentIdIn);
+    NSNumber *parentId = [NSNumber numberWithInt:parentIdIn];
     
     for(ParentTask *pTask in parentList){
-        if(pTask.taskId==parentIdIn){
+        if(pTask.taskId.intValue==parentId.intValue){
             matchingParent = pTask;
             nsIndex = (int)[parentList indexOfObject:matchingParent];
             break;
@@ -53,7 +55,8 @@ void addChildTask(NSMutableArray *parentList){
         NSString * tDesc = getDesc();
         [matchingParent addChildTasks:newChild];
         indexId = (int)[matchingParent.childTasks indexOfObject:newChild];
-        [newChild getChildTask:tDesc taskId:indexId+1 parentTaskId:nsIndex];
+        NSNumber *indexNS = [NSNumber numberWithInt:indexId+1];
+        [newChild getChildTask:tDesc taskId:indexNS];
     }else{
         NSLog(@"An error occurred finding parent");
     }

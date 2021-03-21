@@ -9,6 +9,7 @@
 #import "ViewTaskList.h"
 #import "DeleteTask.h"
 #import "FileIO.h"
+#import "MoveTask.h"
 
 //
 void mainMenu(NSMutableArray *parentList){
@@ -17,14 +18,11 @@ void mainMenu(NSMutableArray *parentList){
     NSLog(@"Main Menu:");
     NSLog(@"What would you like to do?");
     while(!quitCd){
-        NSLog(@"[V]iew tasks, [A]dd task, [D]elete task, [S]ave, [L]oad, [Q]uit.");
+        NSLog(@"[V]iew, [A]dd, [D]elete, [M]ove, [S]ave, [L]oad, [Q]uit.");
         scanf(" %c", usrIn);
         *usrIn = toupper(*usrIn);
         quitCd = (*usrIn=='Q');
         switch(*usrIn){
-            case 'Q':
-                NSLog(@"Goodbye!");
-                break;
             case 'A':
                 addTask(parentList);
                 break;
@@ -36,6 +34,15 @@ void mainMenu(NSMutableArray *parentList){
                 break;
             case 'S':
                 saveArray(parentList);
+                break;
+            case 'M':
+                moveTask(parentList);
+                break;
+            case 'Q':
+                NSLog(@"Goodbye!");
+                break;
+            default:
+                NSLog(@"Invalid input.");
                 break;
         }
     }

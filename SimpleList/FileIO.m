@@ -8,20 +8,20 @@
 #import <Foundation/Foundation.h>
 #import "Task.h"
 
-//Gets logged in user's documents directory
+//Get logged in user's documents directory.
 NSString* documentsDirectory()
 {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     return paths[0];
 }
 
-//Gets data file path for read/write
+//Get data file path for read/write.
 NSString* dataFilePath()
 {
     return [documentsDirectory() stringByAppendingPathComponent:@"taskListFile.plist"];
 }
 
-//Load array from file (currently broken)
+//Load array from file, check for errors. If successful, return pointer to array, else, initialize and return a blank array.
 NSMutableArray* loadArray()
 {
     NSMutableArray *array;
@@ -42,7 +42,7 @@ NSMutableArray* loadArray()
     return array;
 }
 
-//Saves list array to file with SecureCoding
+//Save list to plist file using NSKeyedArchiver.
 void saveArray(NSMutableArray *array)
 {
     NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initRequiringSecureCoding:NO];

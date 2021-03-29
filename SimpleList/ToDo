@@ -1,9 +1,16 @@
-Features:
->Print just single parent or parent and children
->Change order function
+To-Do:
 
-Code Cleanup:
->Merge IDs?
->Define string literals for prompts as MACROS
+1. Create new file for re-indexing functions
+2. Build out printing of single parent
+3. Fix escaping spaces / replace scanf use
 
-Issues:
+Snippets:
+
+Task.m:
++(BOOL)supportsSecureCoding {
+   return YES;
+
+Task.h:
+NSObject <NSSecureCoding>
++(BOOL)supportsSecureCoding;
+

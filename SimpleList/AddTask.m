@@ -1,5 +1,5 @@
 //
-//  TaskFunc.m
+//  AddTask.m
 //  SimpleList
 //
 //  Created by Stephen Choate on 3/16/21.
@@ -13,13 +13,14 @@
 NSString *getDesc(){
     char* usrIn = (char*)malloc(4096);
     NSLog(TASK_PROMPT);
-    scanf("%s", usrIn);
+    scanf(" ");
+    fgets(usrIn, 4096, stdin);
     NSString *newDesc = [NSString stringWithUTF8String:usrIn];
     free(usrIn);
     return newDesc;
 }
 
-//Function to add a new parent task off of main parent
+//Add new parent task to main array
 void addParentTask(NSMutableArray *parentList){
     ParentTask *newTask = [[ParentTask alloc]init];
     NSString *tDesc = getDesc();
@@ -33,7 +34,7 @@ void addParentTask(NSMutableArray *parentList){
     NSLog(@"Task ID Assigned: %@", newTask.taskId);
 }
 
-//Add child task off top level parent
+//Add child task to a parent's child array
 void addChildTask(NSMutableArray *parentList){
     ChildTask *newChild = [[ChildTask alloc]init];
     ParentTask *matchingParent;
@@ -62,7 +63,7 @@ void addChildTask(NSMutableArray *parentList){
     }
 }
 
-//Submenu function for adding a task, prompt for parent or child by char input
+//Submenu, prompt user for parent or child, re-direct to appropriate function
 void addTask(NSMutableArray *parentList){
     char *usrIn = malloc(8);
     bool validIn = false;

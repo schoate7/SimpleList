@@ -4,13 +4,11 @@
 //
 //  Created by Stephen Choate on 3/18/21.
 //
-//TO BUILD:
-//Add a function to print just the parent and children.
 
 #import <Foundation/Foundation.h>
 #import "Task.h"
 
-//Re-index the taskId for parent tasks when a parent task is deleted
+//Re-index task ID for parent tasks when a parent task is deleted
 void reIndexParents(NSMutableArray *parentList){
     int index = 1;
     for (ParentTask *p in parentList){
@@ -19,7 +17,7 @@ void reIndexParents(NSMutableArray *parentList){
     }
 }
 
-//Re-index the taskId for parent and children tasks when a child task is deleted
+//Re-index task ID for parent and children when a child task is deleted from a parent
 void reIndexChildren(NSMutableArray *parentList){
     NSMutableArray *c;
     reIndexParents(parentList);
@@ -36,7 +34,7 @@ void reIndexChildren(NSMutableArray *parentList){
     }
 }
 
-//Delete a child task from a valid parent
+//Delete a child task from a valid parent, if input child ID exists
 void deleteChildTask(ParentTask *pTask){
     NSMutableArray *childArray = pTask.childTasks;
     ChildTask *cTask;
@@ -53,7 +51,6 @@ void deleteChildTask(ParentTask *pTask){
         }
         nsn++;
     }
-    
     if(cTask!=nil){
         [childArray removeObjectAtIndex:nsn];
     }else{
@@ -61,7 +58,7 @@ void deleteChildTask(ParentTask *pTask){
     }
 }
 
-//Main delete task function, includes routine for simple parent task deletion
+//Prompt for parent ID, prompt if children available to delete, re-direct if requested. Detele parent if no children exist.
 void deleteTask(NSMutableArray *parentList){
     char usrIn = (char)malloc(8);
     int pid = 0;
@@ -80,7 +77,7 @@ void deleteTask(NSMutableArray *parentList){
         }
         nsn++;
     }
-    
+    //If there is one or more children, prompt to delete child, otherwise just delete parent
     if(pTask!=nil && [pTask.childTasks count]!=0){
         while(!v){
             NSLog(@"Delete a [P]arent or [C]hild: ");

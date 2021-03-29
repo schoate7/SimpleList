@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6E0BD8572611F50500D00893 /* EditTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E0BD8562611F50500D00893 /* EditTask.m */; };
 		6E7107CF2603763900871EC9 /* ViewTaskList.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E7107CE2603763900871EC9 /* ViewTaskList.m */; };
 		6E7107D42604365700871EC9 /* DeleteTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E7107D32604365700871EC9 /* DeleteTask.m */; };
 		6E7107DA26057F8A00871EC9 /* FileIO.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E7107D926057F8A00871EC9 /* FileIO.m */; };
@@ -29,7 +30,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		6E7107CC26030ABA00871EC9 /* ToDo */ = {isa = PBXFileReference; lastKnownFileType = text; path = ToDo; sourceTree = "<group>"; };
+		6E0BD8552611F4D600D00893 /* EditTask.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EditTask.h; sourceTree = "<group>"; };
+		6E0BD8562611F50500D00893 /* EditTask.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EditTask.m; sourceTree = "<group>"; };
+		6E0BD85B2612681800D00893 /* ToDo */ = {isa = PBXFileReference; lastKnownFileType = text; path = ToDo; sourceTree = "<group>"; };
 		6E7107CE2603763900871EC9 /* ViewTaskList.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewTaskList.m; sourceTree = "<group>"; };
 		6E7107D12603764600871EC9 /* ViewTaskList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewTaskList.h; sourceTree = "<group>"; };
 		6E7107D32604365700871EC9 /* DeleteTask.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DeleteTask.m; sourceTree = "<group>"; };
@@ -80,17 +83,19 @@
 				6EDD33BB26016AA300B9CDF4 /* main.m */,
 				6EDD33C626017FD000B9CDF4 /* AddTask.m */,
 				6E7107D32604365700871EC9 /* DeleteTask.m */,
+				6E0BD8562611F50500D00893 /* EditTask.m */,
 				6E7107DF2606CB8200871EC9 /* MoveTask.m */,
 				6E7107CE2603763900871EC9 /* ViewTaskList.m */,
 				6EDD33C326017CFF00B9CDF4 /* Task.m */,
 				6E7107D926057F8A00871EC9 /* FileIO.m */,
 				6EDD33CB2601B5BE00B9CDF4 /* AddTask.h */,
 				6E7107D62604366500871EC9 /* DeleteTask.h */,
+				6E0BD8552611F4D600D00893 /* EditTask.h */,
 				6E7107E22606CB9100871EC9 /* MoveTask.h */,
 				6E7107D12603764600871EC9 /* ViewTaskList.h */,
 				6EDD33C92601B4BF00B9CDF4 /* Task.h */,
 				6E7107DC260581BA00871EC9 /* FileIO.h */,
-				6E7107CC26030ABA00871EC9 /* ToDo */,
+				6E0BD85B2612681800D00893 /* ToDo */,
 			);
 			path = SimpleList;
 			sourceTree = "<group>";
@@ -164,6 +169,7 @@
 				6E7107CF2603763900871EC9 /* ViewTaskList.m in Sources */,
 				6E7107E02606CB8200871EC9 /* MoveTask.m in Sources */,
 				6E7107D42604365700871EC9 /* DeleteTask.m in Sources */,
+				6E0BD8572611F50500D00893 /* EditTask.m in Sources */,
 				6E7107DA26057F8A00871EC9 /* FileIO.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

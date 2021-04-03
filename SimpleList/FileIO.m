@@ -27,11 +27,12 @@ NSMutableArray* loadArray()
     NSMutableArray *array;
     NSString *path = dataFilePath();
     if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        NSSet *classes = [NSSet setWithObjects:[NSMutableArray class], [ParentTask class],nil];
         NSError *err=nil;
         NSData *data = [[NSData alloc] initWithContentsOfFile:path];
         NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:data error:&err];
-        [unarchiver setRequiresSecureCoding:NO];
-        array = [unarchiver decodeObjectOfClass:[NSMutableArray class] forKey:@"tasklist"];
+        [unarchiver setRequiresSecureCoding:YES];
+        array = [unarchiver decodeObjectOfClasses:classes forKey:@"tasklist"];
         [unarchiver finishDecoding];
         if(err!=nil){
             NSLog(@"Error loading file, error code: %@",err);
@@ -45,7 +46,7 @@ NSMutableArray* loadArray()
 //Save list to plist file using NSKeyedArchiver.
 void saveArray(NSMutableArray *array)
 {
-    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initRequiringSecureCoding:NO];
+    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initRequiringSecureCoding:YES];
     [archiver encodeObject:array forKey:@"tasklist"];
     [archiver finishEncoding];
     NSData* data = [archiver encodedData];

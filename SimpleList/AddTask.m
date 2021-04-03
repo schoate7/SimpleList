@@ -7,12 +7,12 @@
 #import <Foundation/Foundation.h>
 #import "Task.h"
 
-#define TASK_PROMPT @"\nEnter Task Description: "
+#define TASK_PROMPT "Enter Task Description: "
 
 //Re-usable function to get task description for either parent or child, return NSString pointer
 NSString *getDesc(){
     char* usrIn = (char*)malloc(4096);
-    NSLog(TASK_PROMPT);
+    printf("%s", TASK_PROMPT);
     scanf(" ");
     fgets(usrIn, 4096, stdin);
     NSString *newDesc = [NSString stringWithUTF8String:usrIn];
@@ -28,53 +28,42 @@ void addParentTask(NSMutableArray *parentList){
     
     [parentList addObject:newTask];
     newPID = (int)[parentList indexOfObject:newTask] + 1;
-    NSNumber *pidNS = [NSNumber numberWithInt:newPID];
-    [newTask getParentTask:tDesc taskId:pidNS];
+    [newTask getParentTask:tDesc];
     
-    NSLog(@"Task ID Assigned: %@", newTask.taskId);
+    printf("Task ID Assigned: %i\n", newPID);
 }
 
 //Add child task to a parent's child array
 void addChildTask(NSMutableArray *parentList){
-    ChildTask *newChild = [[ChildTask alloc]init];
     ParentTask *matchingParent;
-    int parentIdIn = 0;
-    int indexId = 0;
-    int nsIndex=0;
-    NSLog(@"Enter the parent task ID: ");
-    scanf("%i", &parentIdIn);
-    NSNumber *parentId = [NSNumber numberWithInt:parentIdIn];
+    int pid = 0;
+    int cIndex = 0;
+    pid = getTaskId('P');
+    pid--;
     
-    for(ParentTask *pTask in parentList){
-        if(pTask.taskId.intValue==parentId.intValue){
-            matchingParent = pTask;
-            nsIndex = (int)[parentList indexOfObject:matchingParent];
-            break;
-        }
+    if(parentList.count > pid && pid>=0){
+        matchingParent = parentList[pid];
     }
+    
     if(matchingParent!=nil){
-        NSString * tDesc = getDesc();
-        [matchingParent addChildTasks:newChild];
-        indexId = (int)[matchingParent.childTasks indexOfObject:newChild];
-        NSNumber *indexNS = [NSNumber numberWithInt:indexId+1];
-        [newChild getChildTask:tDesc taskId:indexNS];
+        NSString *tDesc = getDesc();
+        [matchingParent addChildTask:tDesc];
+        cIndex = (int)[matchingParent.childTasks indexOfObject:tDesc]+1;
+        printf("Task ID Assigned: %i.%i\n", pid+1, cIndex);
     }else{
-        NSLog(@"An error occurred finding parent");
+        printf("Cannot find parent ID.\n");
     }
 }
 
 //Submenu, prompt user for parent or child, re-direct to appropriate function
 void addTask(NSMutableArray *parentList){
-    char *usrIn = malloc(8);
+    char sel = ' ';
     bool validIn = false;
     while(!validIn){
-        NSLog(@"What do you want to add?");
-        NSLog(@"[P]arent Task, [C]hild Task");
-        scanf(" %c", usrIn);
-        *usrIn = toupper(*usrIn);
-        validIn = (*usrIn == 'P' || *usrIn == 'C');
+        sel = getChar("Add [P]arent Task or [C]hild Task: ");
+        validIn = (sel == 'P' || sel == 'C');
     }
-    switch(*usrIn){
+    switch(sel){
         case 'P':
             addParentTask(parentList);
             break;
@@ -82,7 +71,7 @@ void addTask(NSMutableArray *parentList){
             addChildTask(parentList);
             break;
         default:
-            NSLog(@"An error has occurred.");
+            printf("An error has occurred.\n");
             break;
     }
 }

@@ -8,100 +8,56 @@
 #import <Foundation/Foundation.h>
 #import "Task.h"
 
-//Re-index task ID for parent tasks when a parent task is deleted
-void reIndexParents(NSMutableArray *parentList){
-    int index = 1;
-    for (ParentTask *p in parentList){
-        p.taskId = [NSNumber numberWithInt:index];
-        index++;
-    }
-}
-
-//Re-index task ID for parent and children when a child task is deleted from a parent
-void reIndexChildren(NSMutableArray *parentList){
-    NSMutableArray *c;
-    reIndexParents(parentList);
-    int index = 1;
-    for (ParentTask *p in parentList){
-        c = (p.childTasks!=nil) ? p.childTasks : nil;
-        if(c!=nil){
-            for (ChildTask *ct in c){
-                ct.taskId = [NSNumber numberWithInt:index];
-                index++;
-            }
-            index = 1;
-        }
-    }
-}
-
 //Delete a child task from a valid parent, if input child ID exists
 void deleteChildTask(ParentTask *pTask){
     NSMutableArray *childArray = pTask.childTasks;
-    ChildTask *cTask;
     int cid;
-    NSLog(@"Enter the child ID to delete: ");
-    scanf("%i", &cid);
-    NSUInteger nsn = 0;
-    NSNumber *cns = [NSNumber numberWithInt:cid];
-    
-    for(ChildTask *child in childArray){
-        if(child.taskId.intValue == cns.intValue){
-            cTask = child;
-            break;
-        }
-        nsn++;
-    }
-    if(cTask!=nil){
-        [childArray removeObjectAtIndex:nsn];
+    cid = getTaskId('C');
+    cid--;
+
+    if(childArray.count > cid && cid>=0){
+        [childArray removeObjectAtIndex:cid];
     }else{
-        NSLog(@"Cannot find child task by ID.");
+        printf("Cannot find child task.\n");
     }
 }
 
 //Prompt for parent ID, prompt if children available to delete, re-direct if requested. Detele parent if no children exist.
 void deleteTask(NSMutableArray *parentList){
-    char usrIn = (char)malloc(8);
+    ParentTask *pTask;
     int pid = 0;
     bool v = false;
 
-    NSLog(@"Enter Parent ID: ");
-    scanf("%i", &pid);
-    NSUInteger nsn = 0;
-    NSNumber *pns = [NSNumber numberWithInt:pid];
-    ParentTask *pTask;
+    pid = getTaskId('P');
+    pid--;
     
-    for (ParentTask *task in parentList){
-        if (task.taskId.intValue == pns.intValue){
-            pTask = task;
-            break;
-        }
-        nsn++;
+    if(parentList.count > pid && pid>=0){
+        pTask = parentList[pid];
     }
+    
     //If there is one or more children, prompt to delete child, otherwise just delete parent
     if(pTask!=nil && [pTask.childTasks count]!=0){
-        while(!v){
-            NSLog(@"Delete a [P]arent or [C]hild: ");
-            scanf(" %c", &usrIn);
-            usrIn = toupper(usrIn);
-            v = (usrIn=='P' || usrIn=='C');
-        }
-        switch (usrIn){
-            case 'P':
-                [parentList removeObjectAtIndex:nsn];
-                reIndexParents(parentList);
-                break;
-            case 'C':
-                deleteChildTask(pTask);
-                reIndexChildren(parentList);
-                break;
-            default:
-                NSLog(@"An error occurred");
-                break;
+        while(!v)
+        {
+            char sel = ' ';
+            printf("Parent has child tasks.\n");
+            sel = getChar("Delete [P]arent or [C]hild: ");
+            v = (sel=='P' || sel=='C');
+            switch (sel){
+                case 'P':
+                    [parentList removeObjectAtIndex:pid];
+                    break;
+                case 'C':
+                    deleteChildTask(pTask);
+                    break;
+                default:
+                    printf("An error occurred.\n");
+                    break;
+            }
         }
     }else if(pTask!=nil){
-        [parentList removeObjectAtIndex:nsn];
-        reIndexParents(parentList);
+        [parentList removeObjectAtIndex:pid];
     }else{
-        NSLog(@"An error ocurred");
+        printf("An error ocurred.\n");
     }
 }

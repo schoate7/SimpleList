@@ -8,13 +8,13 @@
 #ifndef EditTask_h
 #define EditTask_h
 
-/* editChildTask - Accepts NSMutableArray parent list as parameter. Prompts user to get to child task, displays current description and prompts user for input to update description. */
-void editChildTask(NSMutableArray *parentList);
+/* editChildTask - Accepts ParentTask as parameter. Prompts user for child task ID, displays current description and prompts user for input to update description. */
+void editChildTask(ParentTask *pTask);
 
-/* editParentTask - Accepts NSMutableArray parent list as parameter. Prompts user for parent task, displays current description and prompts user for input to update description.*/
-void editParentTask(NSMutableArray *parentList);
+/* editParentTask - Accepts ParentTask as parameter. Displays current description and prompts user for input to update description. */
+void editParentTask(ParentTask *pTask);
 
-/* editTaskMenu - Accepts NSMutableArray parent list as parameter. Drives main submenu, prompts user to edit parent or child task, re-directs to selected function. */
+/* editTaskMenu - Accepts NSMutableArray parent list as parameter. Drives main submenu, prompts user for parent task, if children exist, prompts to update parent or child */
 void editTaskMenu(NSMutableArray *parentList);
 
 #endif /* EditTask_h */

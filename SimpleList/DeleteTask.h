@@ -8,12 +8,6 @@
 #ifndef DeleteTask_h
 #define DeleteTask_h
 
-/* reIndexParents - Accepts NSMutableArray top-level parent list as parameter, re-indexes task ID of parents according to index in array. */
-void reIndexParents(NSMutableArray *parentList);
-
-/*reIndexChildren - Accepts NSMutableArray top-level parent list as parameter, re-indexes all children of all parents. */
-void reIndexChildren(NSMutableArray *parentList);
-
 /* deleteChildTask - Accepts ParentTask pointer as parameter, prompts for ID and deletes a valid child ID. */
 void deleteChildTask(ParentTask *pTask);
 

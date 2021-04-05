@@ -36,9 +36,13 @@ void addParentTask(NSMutableArray *parentList){
 //Add child task to a parent's child array
 void addChildTask(NSMutableArray *parentList){
     ParentTask *matchingParent;
+    char *input = (char*)malloc(32);
     int pid = 0;
     int cIndex = 0;
-    pid = getTaskId('P');
+    printf("Parent ID: ");
+    scanf(" ");
+    fgets(input, 32, stdin);
+    pid = atoi(input);
     pid--;
     
     if(parentList.count > pid && pid>=0){
@@ -53,16 +57,14 @@ void addChildTask(NSMutableArray *parentList){
     }else{
         printf("Cannot find parent ID.\n");
     }
+    free(input);
 }
 
 //Submenu, prompt user for parent or child, re-direct to appropriate function
 void addTask(NSMutableArray *parentList){
     char sel = ' ';
-    bool validIn = false;
-    while(!validIn){
-        sel = getChar("Add [P]arent Task or [C]hild Task: ");
-        validIn = (sel == 'P' || sel == 'C');
-    }
+    NSString *charArgs = [NSString stringWithUTF8String:"PC"];
+    sel = getChar("Add [P]arent Task or [C]hild Task: ", charArgs);
     switch(sel){
         case 'P':
             addParentTask(parentList);

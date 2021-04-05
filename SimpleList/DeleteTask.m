@@ -8,56 +8,55 @@
 #import <Foundation/Foundation.h>
 #import "Task.h"
 
-//Delete a child task from a valid parent, if input child ID exists
-void deleteChildTask(ParentTask *pTask){
-    NSMutableArray *childArray = pTask.childTasks;
-    int cid;
-    cid = getTaskId('C');
-    cid--;
-
-    if(childArray.count > cid && cid>=0){
-        [childArray removeObjectAtIndex:cid];
-    }else{
-        printf("Cannot find child task.\n");
-    }
-}
-
-//Prompt for parent ID, prompt if children available to delete, re-direct if requested. Detele parent if no children exist.
+//Prompt for task ID to delete. If a parent, if children exist, prompt to confirm. If a child or parent without children, delete.
 void deleteTask(NSMutableArray *parentList){
-    ParentTask *pTask;
-    int pid = 0;
-    bool v = false;
-
-    pid = getTaskId('P');
-    pid--;
+    char *input = (char*)malloc(32);
+    printf("Task ID to Delete: ");
+    scanf(" ");
+    fgets(input, 32, stdin);
+    NSString *inputString = [NSString stringWithUTF8String:input];
     
-    if(parentList.count > pid && pid>=0){
-        pTask = parentList[pid];
-    }
+    int childIndex = getId(inputString, 'C');
+    int parentIndex = getId(inputString, 'P');
     
-    //If there is one or more children, prompt to delete child, otherwise just delete parent
-    if(pTask!=nil && [pTask.childTasks count]!=0){
-        while(!v)
-        {
-            char sel = ' ';
-            printf("Parent has child tasks.\n");
-            sel = getChar("Delete [P]arent or [C]hild: ");
-            v = (sel=='P' || sel=='C');
-            switch (sel){
-                case 'P':
-                    [parentList removeObjectAtIndex:pid];
-                    break;
-                case 'C':
-                    deleteChildTask(pTask);
-                    break;
-                default:
-                    printf("An error occurred.\n");
-                    break;
+    //If no child task in regex, assume parent task
+    if(childIndex == -1){
+        parentIndex = atoi(input);
+        parentIndex--;
+        if(parentList.count > parentIndex){
+            ParentTask *pt = parentList[parentIndex];
+            if(pt.childTasks.count > 0){
+                NSString *commandArgs = [NSString stringWithUTF8String:"YN"];
+                char confirm = getChar("Child tasks detected, confirm delete [Y/N]: ", commandArgs);
+                if(confirm == 'Y'){
+                    [parentList removeObjectAtIndex:parentIndex];
+                }else{
+                    printf("Leaving parent %i unchanged.\n", parentIndex+1);
+                }
+            }else{
+                [parentList removeObjectAtIndex:parentIndex];
             }
+        }else{
+            printf("No parent task at %i.\n", parentIndex+1);
         }
-    }else if(pTask!=nil){
-        [parentList removeObjectAtIndex:pid];
+    
+    //If regex decomposed into child and parent, process child deletion
+    }else if(childIndex != -1 && parentIndex != -1){
+        parentIndex--;
+        if(parentList.count > parentIndex){
+            ParentTask *parent = parentList[parentIndex];
+            NSMutableArray *childList = parent.childTasks;
+            childIndex--;
+            if(childList.count > childIndex){
+                [childList removeObjectAtIndex:childIndex];
+            }else{
+                printf("No child task at %i.%i.\n",parentIndex+1,childIndex+1);
+            }
+        }else{
+            printf("No parent task at %i.\n", parentIndex+1);
+        }
     }else{
-        printf("An error ocurred.\n");
+        printf("Unknown error.\n");
     }
+    free(input);
 }

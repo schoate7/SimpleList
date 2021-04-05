@@ -5,6 +5,7 @@
 //  Created by Stephen Choate on 3/16/21.
 //
 #import <Foundation/Foundation.h>
+#import <unistd.h>
 #import "Task.h"
 #import "AddTask.h"
 #import "DeleteTask.h"
@@ -12,16 +13,42 @@
 #import "MoveTask.h"
 #import "FileIO.h"
 
+static bool interactiveMode = false;
+
+//Function to print list of accepted command line arguments to user
+void commandList(){
+    printf("-------------------------------\n");
+    printf("Command List: \n");
+    printf("L - List all active tasks.\n");
+    printf("P - Print a single parent and children.\n");
+    printf("A - Add a task.\n");
+    printf("D - Delete a task.\n");
+    printf("E - Edit a task.\n");
+    printf("M - Move a task.\n");
+    printf("I - Interactive mode (with menu).\n");
+    printf("C - Command list (this).\n");
+    printf("Single commands with argument auto-save.\n");
+    printf("-------------------------------\n");
+}
+
 //Main menu function - accept array pointer, loop through and accept user input to drive menu, call appropriate functions.
-void mainMenu(NSMutableArray *parentList){
-    char usrIn = ' ';
+void mainMenu(NSMutableArray *parentList, int opt){
+    NSString *charArgs = [NSString stringWithUTF8String:"LADEMSQP"];
+    NSString *argsSave = [NSString stringWithUTF8String:"ADEM"];
+    char sel = ' ';
     bool quitCd = false;
-    printf("\nWhat would you like to do?\n");
+    if(interactiveMode){
+        printf("Welcome to SimpleList!\n");
+        printf("Logged in as: %s (%s).\n", [NSFullUserName().description UTF8String], [NSUserName().description UTF8String]);
+        printf("**Changes in interactive mode must be saved before quitting.**");
+        printf("\nWhat would you like to do?\n");
+    }
+    
     while(!quitCd){
-        usrIn = getChar("[V]iew All | [A]dd | [D]elete | [E]dit | [M]ove | [S]ave | [Q]uit: ");
-        quitCd = (usrIn=='Q');
-        switch(usrIn){
-            case 'V':
+        sel = (interactiveMode) ? getChar("[L]ist | [A]dd | [D]elete | [E]dit | [M]ove | [S]ave | [Q]uit: ", charArgs) : toupper(opt);
+        quitCd = (sel=='Q' || !interactiveMode);
+        switch(sel){
+            case 'L':
                 displayTaskList(parentList);
                 break;
             case 'A':
@@ -34,7 +61,7 @@ void mainMenu(NSMutableArray *parentList){
                 editTaskMenu(parentList);
                 break;
             case 'M':
-                moveTaskMenu(parentList);
+                moveTask(parentList);
                 break;
             case 'S':
                 saveArray(parentList);
@@ -42,21 +69,34 @@ void mainMenu(NSMutableArray *parentList){
             case 'P':
                 viewSingleParent(parentList);
                 break;
+            case 'C':
+                (!interactiveMode) ? commandList() : nil;
+                break;
             case 'Q':
                 printf("Goodbye!\n");
                 break;
             default:
-                printf("Invalid input.\n");
+                (interactiveMode) ? printf("Invalid input.\n") : printf("Usage: [-lpademi], \"-c\" for help \n");
                 break;
+            }
+        if(!interactiveMode){
+            for(int i=0; i<argsSave.length; i++){
+                if(sel == [argsSave characterAtIndex:i]){
+                    saveArray(parentList);
+                }
+            }
         }
     }
 }
 
-//Application main - print greeting, initialize parent array (from file if available), call main menu.
-int main(int argc, const char * argv[]) {
-    printf("Welcome to SimpleList!\n");
-    printf("Logged in as: %s (%s).\n", [NSFullUserName().description UTF8String], [NSUserName().description UTF8String]);
+//Application main - handle arg input for single-command use, 'i' for interactive menu
+int main(int argc, char *argv[]) {
+    int opt = 0;
     NSMutableArray *parentList = loadArray();
-    mainMenu(parentList);
+    opt = getopt(argc, argv, "ladempic");
+    if(opt == 'i'){
+        interactiveMode = true;
+    }
+    mainMenu(parentList, opt);
     return 0;
 }

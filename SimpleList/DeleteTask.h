@@ -8,10 +8,7 @@
 #ifndef DeleteTask_h
 #define DeleteTask_h
 
-/* deleteChildTask - Accepts ParentTask pointer as parameter, prompts for ID and deletes a valid child ID. */
-void deleteChildTask(ParentTask *pTask);
-
-/* deleteTask - Accepts NSMutableArray parent list as a parameter, prompts to delete a parent task or re-direct to deleteChildTask */
+/* deleteTask - Accepts NSMutableArray parent list as a parameter, prompts for task ID to delete. Deletes if available, prompts user to confirm if deleting a parent with child tasks. */
 void deleteTask(NSMutableArray *parentList);
 
 #endif /* DeleteTask_h */

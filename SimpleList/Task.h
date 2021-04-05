@@ -36,11 +36,11 @@
 
 @end
 
-/* getChar - Accepts a char* input parameter to prompt user. Prompts user with string, returns input character. */
-char getChar(char *prompt);
+/* getId - Accepts NSString in #.# format as input, char type declaration (P,C), to be decomposed using a RegEx. Returns decomposed parent or child if input valid, -1 if not. */
+int getId(NSString *input, char type);
 
-/* getTaskId - Accepts a char taskType parameter to determine parent or child prompt. Prompts user for task ID, returns integer value. */
-int getTaskId(char taskType);
+/* getChar - Accepts a char* input parameter to prompt user, NSString args. Prompts user with string, if args, only return if a match found, otherwise re-prompt. If nil args, return any character input. */
+char getChar(char *prompt, NSString *args);
 
 /* viewSingleParent - Accepts NSMutableArray parent list as parameter. Prompts user for parent task ID, displays parent and any children. */
 void viewSingleParent(NSMutableArray *parentList);

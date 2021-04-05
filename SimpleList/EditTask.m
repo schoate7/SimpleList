@@ -8,83 +8,76 @@
 #import <Foundation/Foundation.h>
 #import "Task.h"
 
-//Get child ID, display existing description, prompt for input and execute replacement
-void editChildTask(ParentTask *pTask){
-    NSMutableArray *childList = pTask.childTasks;
-    NSString *curDesc;
-    int cid = 0;
-    
-    cid = getTaskId('C');
-    cid--;
-        
-    if(childList.count > cid && cid>=0){
-        char *newDesc = (char*)malloc(4096);
-        curDesc = childList[cid];
-        printf("Current description: %s", [curDesc UTF8String]);
-        printf("Change to: ");
-        scanf(" ");
-        fgets(newDesc, 4096, stdin);
-        if(newDesc!=nil){
-            childList[cid] = [NSString stringWithUTF8String:newDesc];
-        }else{
-            printf("Leaving description unchanged.\n");
-        }
-    }else{
-        printf("Cannot find child ID.\n");
-    }
-}
-
-//Display existing description for parent ID parameter, prompt for input and execute replacement
-void editParentTask(ParentTask *pTask){
-    NSString *existingDesc = pTask.taskDesc;
-    char *newDesc = (char*)malloc(4096);
+//Display existing child task description, prompt for replacement string and insert into parent's childTasks array.
+void editChildTask(NSMutableArray *childList, int childIndex){
+    char *input = (char*)malloc(4096);
+    NSString *existingDesc = childList[childIndex];
     
     printf("Current description: %s", [existingDesc UTF8String]);
-    printf("Change to: ");
+    printf("Change to:");
     scanf(" ");
-    fgets(newDesc, 4096, stdin);
+    fgets(input, 4096, stdin);
     
-    if(newDesc!=nil){
-        [pTask updateDesc:[NSString stringWithUTF8String:newDesc]];
+    if(input!=nil){
+        childList[childIndex] = [NSString stringWithUTF8String:input];
     }else{
         printf("Leaving description unchanged.\n");
     }
-    free(newDesc);
+    free(input);
 }
 
-//Submenu, prompt user to edit parent or child task, re-direct to selected function
-void editTaskMenu(NSMutableArray *parentList){
-    ParentTask *pTask;
-    int pid = 0;
-    bool v = false;
+//Display parent task description from input parameter, prompt for replacement string and insert.
+void editParentTask(ParentTask *pTask){
+    char *input = (char*)malloc(4096);
+    NSString *existingDesc = pTask.taskDesc;
+
+    printf("Current description: %s", [existingDesc UTF8String]);
+    printf("Change to: ");
+    scanf(" ");
+    fgets(input, 4096, stdin);
     
-    pid = getTaskId('P');
-    pid--;
-    
-    if(parentList.count > pid && pid>=0){
-        pTask = parentList[pid];
+    if(input!=nil){
+        [pTask updateDesc:[NSString stringWithUTF8String:input]];
+    }else{
+        printf("Leaving description unchanged.\n");
     }
+    free(input);
+}
+
+//Submenu, prompt user for task ID, if a child is found direct to child editor, else assume editing parent.
+void editTaskMenu(NSMutableArray *parentList){
+    char *input = (char*)malloc(32);
     
-    if(pTask!=nil && [pTask.childTasks count]!=0){
-        while(!v){
-            char sel = ' ';
-            sel = getChar("Edit [P]arent or [C]hild?: ");
-            v = (sel == 'P' || sel == 'C');
-            switch(sel){
-                case 'P':
-                    editParentTask(pTask);
-                    break;
-                case 'C':
-                    editChildTask(pTask);
-                    break;
-                default:
-                    printf("Invalid input.\n");
-                    break;
+    printf("Enter task ID to edit: ");
+    scanf(" ");
+    fgets(input, 32, stdin);
+    NSString *inputString = [NSString stringWithUTF8String:input];
+    
+    int childIndex = getId(inputString, 'C');
+    int parentIndex = getId(inputString, 'P');
+    
+    if(childIndex == -1){
+        parentIndex = atoi(input);
+        parentIndex--;
+        if(parentList.count > parentIndex){
+            editParentTask(parentList[parentIndex]);
+        }else{
+            printf("No parent task at %i.\n", parentIndex+1);
+        }
+    }else if (childIndex != -1 && parentIndex != -1){
+        parentIndex--;
+        childIndex--;
+        if(parentList.count > parentIndex){
+            ParentTask *pt = parentList[parentIndex];
+            NSMutableArray *cl = pt.childTasks;
+            if(cl.count > childIndex){
+                editChildTask(cl,childIndex);
+            }else{
+                printf("No child task at %i.%i\n", parentIndex+1, childIndex+1);
             }
         }
-    }else if (pTask!=nil){
-        editParentTask(pTask);
+        
     }else{
-        printf("Cannot find parent task.\n");
+        printf("Unknown error.");
     }
 }

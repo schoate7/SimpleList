@@ -6,151 +6,213 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Task.h"
+#import "ParentTask.h"
+#import "Common.h"
 
 #define TO_MOVE "Task ID to move: "
-#define TO_DISPLACE "Task ID to displace: "
+#define TO_DISPLACE "Task ID to displace (end to put at end): "
 
-//Prompt for task ID to move, determine if parent or child. Prompt for task ID to displace, determine if parent or child. Insert accordingly.
+static bool insertAtChildEnd(char *input){
+    NSString *inString = [NSString stringWithUTF8String:input];
+    NSError *err = nil;
+    size_t inLen = [inString length];
+    NSRegularExpression *regEx = [NSRegularExpression regularExpressionWithPattern:@"^[0-9][.][e][n][d]*$" options:NSRegularExpressionCaseInsensitive error:&err];
+    NSUInteger numberOfMatches = [regEx numberOfMatchesInString:inString options:0 range:NSMakeRange(0, inLen)];
+    
+    return (numberOfMatches>0);
+}
+
+static bool insertAtEnd(char *input){
+    NSString *inString = [NSString stringWithUTF8String:input];
+    NSError *err = nil;
+    size_t inLen = [inString length];
+    NSRegularExpression *regEx = [NSRegularExpression regularExpressionWithPattern:@"^[e][n][d]*$" options:NSRegularExpressionCaseInsensitive error:&err];
+    NSUInteger numberOfMatches = [regEx numberOfMatchesInString:inString options:0 range:NSMakeRange(0, inLen)];
+    
+    return (numberOfMatches>0);
+}
+
+//Move a parent task to another position within the parent list
+static void parentToParent(NSMutableArray *parentList, int tmParent, int trParent){
+    if(trParent == tmParent){
+        printf("There's nothing to do.\n");
+    }
+    if(parentList.count > trParent && trParent>=0){
+        ParentTask *taskToMove = parentList[tmParent];
+        [parentList insertObject:taskToMove atIndex:trParent];
+        (tmParent > trParent) ? [parentList removeObjectAtIndex:tmParent+1] : [parentList removeObjectAtIndex:tmParent];
+    }else if(parentList.count == trParent && trParent>=0){ //Insert at end if index is list size
+        ParentTask *taskToMove = parentList[tmParent];
+        [parentList addObject:taskToMove];
+        [parentList removeObjectAtIndex:tmParent];
+    }
+}
+
+//Make a parent task a child of another parent if parent does not have any child tasks
+static void parentToChild(NSMutableArray *parentList, int tmParent, int trParent, int trChild){
+    ParentTask *parentToMove = parentList[tmParent];
+    if(parentToMove.childTasks.count>0){
+        printf("Cannot make a parent task with children a child task.\n");
+    }else{
+        ParentTask *insertInto = parentList[trParent];
+        NSMutableArray *newChildList = insertInto.childTasks;
+        NSString *newChild = parentToMove.taskDesc;
+
+        (newChildList.count > trChild) ? [newChildList insertObject:newChild atIndex:trChild] : [newChildList addObject:newChild];
+        [parentList removeObjectAtIndex:tmParent];
+    }
+}
+
+//Convert a child task to a parent task
+static void childToParent(NSMutableArray *parentList, NSString *toMove, NSMutableArray *originalChildList, int parentId, int tmChild){
+    if(parentList.count > parentId){
+        ParentTask *newPT = [[ParentTask alloc]init];
+        [newPT getParentTask:toMove];
+        [parentList insertObject:newPT atIndex:parentId];
+        [originalChildList removeObjectAtIndex:tmChild];
+    }else if(parentList.count<=parentId){
+        ParentTask *newPT = [[ParentTask alloc]init];
+        [newPT getParentTask:toMove];
+        [parentList addObject:newPT];
+        [originalChildList removeObjectAtIndex:tmChild];
+    }
+}
+
+//Move child task within a the same parent task
+static void childToChild(NSMutableArray *childList, NSString *toMove, int tmChild, int trChild){
+    if(childList.count > trChild && trChild!=tmChild && trChild>=0){
+        [childList insertObject:toMove atIndex:trChild];
+        (trChild > tmChild) ? [childList removeObjectAtIndex:tmChild] : [childList removeObjectAtIndex:tmChild+1];
+    }else if (childList.count <= trChild){
+        [childList addObject:toMove];
+        [childList removeObjectAtIndex:tmChild];
+    }else if (trChild==tmChild && trChild>=0){
+        printf("There is nothing to do.\n");
+    }else{
+        printf("Replacement child out of range.\n");
+    }
+}
+
+//Move child task to be a child of another parent task
+static void childToOtherChild(NSMutableArray *originalChildList, NSMutableArray *newChildList, NSString *toMove, int tmChild, int trChild){
+    if((newChildList.count == 0 && trChild>=0) || newChildList.count <=trChild){
+        [newChildList addObject:toMove];
+        [originalChildList removeObjectAtIndex:tmChild];
+    }else if(newChildList.count > trChild && trChild >=0){
+        [newChildList insertObject:toMove atIndex:trChild];
+        [originalChildList removeObjectAtIndex:tmChild];
+    }else{
+        printf("Can't find child to displace.\n");
+    }
+}
+
+//Move task, prompts for task IDs, intercepts exit characters, tests for 'end' text, moves tasks throughout list
 void moveTask(NSMutableArray *parentList){
-    ParentTask *parentToMove;
+    ParentTask *pt;
     NSMutableArray *originalChildList;
     NSMutableArray *newChildList;
-    NSString *toMove;
+    NSString *descriptionToMove;
     char *input = (char*)malloc(32);
-    int tmChild, tmParent, trChild, trParent;
+    int moveChild, moveParent, replaceChild, replaceParent;
     
     printf("%s", TO_MOVE);
     scanf(" ");
     fgets(input, 32, stdin);
-    tmChild = getId([NSString stringWithUTF8String:input], 'C');
-    tmParent = getId([NSString stringWithUTF8String:input], 'P');
-    tmChild--;
-    tmParent--;
+    moveChild = getId([NSString stringWithUTF8String:input], 'C');
+    moveParent = getId([NSString stringWithUTF8String:input], 'P');
     
-    //If no child task input detected, set up tm parent index, parent to move objects
-    if(tmChild==-2){
-        tmParent = atoi(input);
-        tmParent--;
-        if(parentList.count > tmParent){
-            parentToMove = parentList[tmParent];
-            toMove = parentToMove.taskDesc;
-        }
+    if(quitChar(moveChild, moveParent)){
+        printf("Exiting with no changes.\n");
+        free(input);
+        return;
+    }else{
+        moveChild--;
+        moveParent--;
     }
     
-    //If parentToMove is not initialized, assume there's a child to be moved, check if child within range, set up toMove NSString
-    if(parentToMove==nil && parentList.count > tmParent && tmParent>=0){
-        ParentTask *origParent = parentList[tmParent];
-        originalChildList = origParent.childTasks;
-        if(originalChildList.count > tmChild && tmChild>=0){
-            toMove = originalChildList[tmChild];
+    if(moveChild == -2 && moveParent == -2){
+        printf("Invalid task ID, exiting.\n");
+        free(input);
+        return;
+    }else if (moveParent > parentList.count){
+        printf("Parent ID out of range.\n");
+        free(input);
+        return;
+    }else if (moveChild > -1){
+        pt = parentList[moveParent];
+        originalChildList = pt.childTasks;
+        if(moveChild > originalChildList.count){
+            printf("Child ID out of range.\n");
+            free(input);
+            return;
+        }else{
+            descriptionToMove = originalChildList[moveChild];
         }
+    }else{
+        pt = parentList[moveParent];
     }
     
-    if(toMove!=nil){
-        printf("%s", TO_DISPLACE);
-        scanf(" ");
-        fgets(input, 32, stdin);
-        trChild = getId([NSString stringWithUTF8String:input], 'C');
-        trParent = getId([NSString stringWithUTF8String:input], 'P');
-        
-        //If both inputs are parent tasks, execute a move within main parent list
-        if(trChild==-1 && parentToMove!=nil){
-            trParent = atoi(input);
-            trParent--;
-            if(trParent == tmParent){
-                printf("There's nothing to do.\n");
-                return;
-            }
-            if(parentList.count > trParent && trParent>=0){
-                ParentTask *taskToMove = parentList[tmParent];
-                [parentList insertObject:taskToMove atIndex:trParent];
-                (tmParent > trParent) ? [parentList removeObjectAtIndex:tmParent+1] : [parentList removeObjectAtIndex:tmParent];
-                free(input);
-                return;
-            }else if(parentList.count == trParent && trParent>=0){ //Insert at end if index is list size
-                ParentTask *taskToMove = parentList[tmParent];
-                [parentList addObject:taskToMove];
-                [parentList removeObjectAtIndex:tmParent];
-                free(input);
-                return;
-            }
-        }
-        
-        //If to move input does not have a child id, but to replace does, take desc and insert as child on dest parent at desired index
-        if(trChild!=-1 && parentToMove!=nil){
-            if(parentToMove.childTasks.count>0){
-                printf("Cannot make a parent task with children a child task.\n");
-            }else{
-                trParent--;
-                ParentTask *insertInto = parentList[trParent];
-                NSMutableArray *newChildList = insertInto.childTasks;
-                NSString *newChild = parentToMove.taskDesc;
-                trChild--;
-                
-                (newChildList.count > trChild) ? [newChildList insertObject:newChild atIndex:trChild] : [newChildList addObject:newChild];
-                [parentList removeObjectAtIndex:tmParent];
-            }
+    printf("%s", TO_DISPLACE);
+    scanf(" ");
+    fgets(input, 32, stdin);
+    replaceChild = getId([NSString stringWithUTF8String:input], 'C');
+    replaceParent = getId([NSString stringWithUTF8String:input], 'P');
+    
+    if(quitChar(replaceChild, replaceParent)){
+        printf("Exiting with no changes.\n");
+        free(input);
+        return;
+    }else{
+        replaceChild--;
+        replaceParent--;
+    }
+    
+    if (replaceChild == -2 && replaceParent == -2){
+        if(insertAtChildEnd(input)){
+            NSString *strIn = [NSString stringWithUTF8String:input];
+            NSArray *strComponents = [strIn componentsSeparatedByString:@"."];
+            NSString *newParentReplaceValue = strComponents[0];
+            replaceParent = newParentReplaceValue.intValue-1;
+            pt = parentList[replaceParent];
+            newChildList = pt.childTasks;
+            replaceChild = (int)pt.childTasks.count;
+        }else if(insertAtEnd(input)){
+            replaceParent = (int)parentList.count;
+        }else{
+            printf("Invalid task ID, exiting.\n");
             free(input);
             return;
         }
-        
-        //If to replace input does not have a child id, create a new parent task and insert into main list
-        if(trChild==-1){
-            int parentId = atoi(input);
-            parentId--;
-            if(parentList.count > parentId){
-                NSString *desc = toMove;
-                ParentTask *newPT = [[ParentTask alloc]init];
-                [newPT getParentTask:desc];
-                [parentList insertObject:newPT atIndex:parentId];
-                [originalChildList removeObjectAtIndex:tmChild];
-                free(input);
-                return;
-            }
-        }else{
-            trChild--;
-            trParent--;
+    }else if (replaceParent > parentList.count){
+        printf("Parent ID out of range.\n");
+        free(input);
+        return;
+    }else if (replaceChild>-1){
+        pt = parentList[replaceParent];
+        newChildList = pt.childTasks;
+        if(replaceChild > newChildList.count){
+            printf("Child ID out of range.\n");
+            free(input);
+            return;
         }
-        
-        //If parent task for two child tasks is the same, move child within same parent task
-        if(trParent == tmParent){
-            if(originalChildList.count > trChild && trChild!=tmChild && trChild>=0){
-                [originalChildList insertObject:toMove atIndex:trChild];
-                (trChild > tmChild) ? [originalChildList removeObjectAtIndex:tmChild] : [originalChildList removeObjectAtIndex:tmChild+1];
-            }else if (originalChildList.count <= trChild){
-                [originalChildList addObject:toMove];
-                [originalChildList removeObjectAtIndex:tmChild];
-            }else if (trChild==tmChild && trChild>=0){
-                printf("There is nothing to do.\n");
-            }else{
-                printf("Replacement child out of range.\n");
-            }
-            
-        //If parent tasks are different, but both valid and in range, move child between two different parent task child arrays
-        }else if(parentList.count > trParent && trParent>=0){
-            ParentTask *newParent = parentList[trParent];
-            newChildList = newParent.childTasks;
-            if((newChildList.count == 0 && trChild>=0) || newChildList.count <=trChild){
-                [newChildList addObject:toMove];
-                [originalChildList removeObjectAtIndex:tmChild];
-            }else if(newChildList.count > trChild && trChild >=0){
-                [newChildList insertObject:toMove atIndex:trChild];
-                [originalChildList removeObjectAtIndex:tmChild];
-            }else{
-                printf("Can't find child to displace.\n");
-            }
-            
-        //Print error for exception scenarios
-        }else if(parentList.count <= tmParent){
-            printf("Cannot move child to non-existent parent.\n");
-        }else if(tmParent == trParent && tmChild == trChild){
-            printf("There is nothing to do.\n");
+    }
+    
+    if ((moveParent>-1 && replaceParent>-1) && (moveChild==-2 && replaceChild==-2)){
+        parentToParent(parentList, moveParent, replaceParent);
+    }
+    else if((moveParent>-1 && replaceParent>-1) && (moveChild>-1 && replaceChild==-2)){
+        childToParent(parentList, descriptionToMove, originalChildList, replaceParent, moveChild);
+    }
+    else if ((moveParent>-1 && replaceParent>-1) && (moveChild==-2 && replaceChild>-1)){
+        parentToChild(parentList, moveParent, replaceParent, replaceChild);
+    }else if ((moveParent>-1 && replaceParent>-1 && moveChild>-1 && replaceChild>-1)){
+        if(moveParent == replaceParent){
+            childToChild(originalChildList, descriptionToMove, moveChild, replaceChild);
         }else{
-            printf("An error occurred finding child.\n");
+            childToOtherChild(originalChildList, newChildList, descriptionToMove, moveChild, replaceChild);
         }
     }else{
-        printf("Cannot find task ID.\n");
+        printf("An error has occurred, no changes made.\n");
     }
     free(input);
 }

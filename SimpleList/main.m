@@ -6,11 +6,12 @@
 //
 #import <Foundation/Foundation.h>
 #import <unistd.h>
-#import "Task.h"
+#import "ParentTask.h"
 #import "AddTask.h"
 #import "DeleteTask.h"
 #import "EditTask.h"
 #import "MoveTask.h"
+#import "Common.h"
 #import "FileIO.h"
 
 static bool interactiveMode = false;
@@ -27,14 +28,15 @@ void commandList(){
     printf("M - Move a task.\n");
     printf("I - Interactive mode (with menu).\n");
     printf("C - Command list (this).\n");
+    printf("\"-e\"  - Exit any prompt.\n");
     printf("Single commands with argument auto-save.\n");
     printf("-------------------------------\n");
 }
 
 //Main menu function - accept array pointer, loop through and accept user input to drive menu, call appropriate functions.
 void mainMenu(NSMutableArray *parentList, int opt){
-    NSString *charArgs = [NSString stringWithUTF8String:"LADEMSQP"];
-    NSString *argsSave = [NSString stringWithUTF8String:"ADEM"];
+    NSString *charArgs = [NSString stringWithUTF8String:"[LADEMSQP]"];
+    NSString *argsSave = [NSString stringWithUTF8String:"[ADEM]"];
     char sel = ' ';
     bool quitCd = false;
     if(interactiveMode){
@@ -46,7 +48,7 @@ void mainMenu(NSMutableArray *parentList, int opt){
     
     while(!quitCd){
         sel = (interactiveMode) ? getChar("[L]ist | [A]dd | [D]elete | [E]dit | [M]ove | [S]ave | [Q]uit: ", charArgs) : toupper(opt);
-        quitCd = (sel=='Q' || !interactiveMode);
+        quitCd = (sel=='Q' || sel == '!' || !interactiveMode);
         switch(sel){
             case 'L':
                 displayTaskList(parentList);
@@ -72,7 +74,7 @@ void mainMenu(NSMutableArray *parentList, int opt){
             case 'C':
                 (!interactiveMode) ? commandList() : nil;
                 break;
-            case 'Q':
+            case 'Q': case '!':
                 printf("Goodbye!\n");
                 break;
             default:

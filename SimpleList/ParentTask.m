@@ -5,7 +5,8 @@
 //  Created by Stephen Choate on 3/16/21.
 //
 #import <Foundation/Foundation.h>
-#import "Task.h"
+#import "ParentTask.h"
+#import "Common.h"
 
 //Define standardized output format string literals for printing list
 #define PARENT_LABEL "%i: %s"
@@ -55,60 +56,6 @@
 }
 @end
 
-//Get ID number and return from regex #.#. type c to return child, type p for parent. Returns -1 if type cannot be found in expression.
-int getId(NSString *input, char type){
-    NSError *err = NULL;
-    unsigned long inLength = [input length];
-    NSRegularExpression *regEx = [NSRegularExpression regularExpressionWithPattern:@"^[0-9][.][0-9]*$" options:NSRegularExpressionCaseInsensitive error:&err];
-    NSUInteger numberOfMatches = [regEx numberOfMatchesInString:input options:0 range:NSMakeRange(0, inLength)];
-    
-    if(numberOfMatches == 1){
-        NSArray *splitStringArray = [input componentsSeparatedByString:@"."];
-        if (type == 'C'){
-            NSString *value = splitStringArray[1];
-            return value.intValue;
-        }else if (type == 'P'){
-            NSString *value = splitStringArray[0];
-            return value.intValue;
-        }else{
-            printf("Error: A function is improperly using getId.\n");
-        }
-    }
-    return -1;
-}
-
-//Generic function to get a character, loop until input matches a character in args string, return any char if args are nil
-char getChar(char *prompt, NSString *args){
-    char *input = (char*)malloc(32);
-    char c = ' ';
-    bool v = false;
-    
-    while(!v){
-        printf("%s", prompt);
-        scanf(" ");
-        fgets(input, 32, stdin);
-        if(args==nil){
-            v = true;
-        }else if(args!=nil){
-            size_t argLen = args.length;
-            for(int i=0; i<argLen; i++){
-                if([args characterAtIndex:i] == toupper(input[0])){
-                    v = true;
-                }
-            }
-            if(v==false){
-                printf("Invalid input, please try again.\n");
-            }
-        }
-    }
-
-    if(input != NULL){
-        c = toupper(input[0]);
-    }
-    
-    return c;
-}
-
 //Prompt user for a parent ID, if valid, print the contents of the single parent.
 void viewSingleParent(NSMutableArray *parentList){
     char *input = (char*)malloc(32);
@@ -116,6 +63,10 @@ void viewSingleParent(NSMutableArray *parentList){
     printf("Parent ID: ");
     scanf(" ");
     fgets(input, 32, stdin);
+    if(isQuitChar(input)){
+        printf("Exiting...\n");
+        return;
+    }
     index = atoi(input);
     index--;
     if (parentList.count < index+1 || index < 0){

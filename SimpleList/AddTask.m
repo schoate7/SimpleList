@@ -5,7 +5,8 @@
 //  Created by Stephen Choate on 3/16/21.
 //
 #import <Foundation/Foundation.h>
-#import "Task.h"
+#import "ParentTask.h"
+#import "Common.h"
 
 #define TASK_PROMPT "Enter Task Description: "
 
@@ -15,15 +16,24 @@ NSString *getDesc(){
     printf("%s", TASK_PROMPT);
     scanf(" ");
     fgets(usrIn, 4096, stdin);
-    NSString *newDesc = [NSString stringWithUTF8String:usrIn];
-    free(usrIn);
-    return newDesc;
+    if(isQuitChar(usrIn)){
+        free(usrIn);
+        return nil;
+    }else{
+        NSString *newDesc = [NSString stringWithUTF8String:usrIn];
+        free(usrIn);
+        return newDesc;
+    }
 }
 
 //Add new parent task to main array
 void addParentTask(NSMutableArray *parentList){
     ParentTask *newTask = [[ParentTask alloc]init];
     NSString *tDesc = getDesc();
+    if(tDesc == nil){
+        printf("Exiting with no chnages.\n");
+        return;
+    }
     int newPID = 0;
     
     [parentList addObject:newTask];
@@ -42,6 +52,11 @@ void addChildTask(NSMutableArray *parentList){
     printf("Parent ID: ");
     scanf(" ");
     fgets(input, 32, stdin);
+    if(isQuitChar(input)){
+        printf("Exiting with no chnages.\n");
+        free(input);
+        return;
+    }
     pid = atoi(input);
     pid--;
     
@@ -51,6 +66,11 @@ void addChildTask(NSMutableArray *parentList){
     
     if(matchingParent!=nil){
         NSString *tDesc = getDesc();
+        if(tDesc == nil){
+            printf("Leaving unchanged.\n");
+            free(input);
+            return;
+        }
         [matchingParent addChildTask:tDesc];
         cIndex = (int)[matchingParent.childTasks indexOfObject:tDesc]+1;
         printf("Task ID Assigned: %i.%i\n", pid+1, cIndex);
@@ -63,7 +83,7 @@ void addChildTask(NSMutableArray *parentList){
 //Submenu, prompt user for parent or child, re-direct to appropriate function
 void addTask(NSMutableArray *parentList){
     char sel = ' ';
-    NSString *charArgs = [NSString stringWithUTF8String:"PC"];
+    NSString *charArgs = [NSString stringWithUTF8String:"[PC]"];
     sel = getChar("Add [P]arent Task or [C]hild Task: ", charArgs);
     switch(sel){
         case 'P':
@@ -73,7 +93,7 @@ void addTask(NSMutableArray *parentList){
             addChildTask(parentList);
             break;
         default:
-            printf("An error has occurred.\n");
+            printf("Exiting with no chnages.\n");
             break;
     }
 }

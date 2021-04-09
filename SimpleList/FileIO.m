@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Task.h"
+#import "ParentTask.h"
 
 //Get logged in user's documents directory.
 NSString* documentsDirectory()

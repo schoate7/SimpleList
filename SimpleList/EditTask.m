@@ -6,7 +6,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Task.h"
+#import "ParentTask.h"
+#import "Common.h"
 
 //Display existing child task description, prompt for replacement string and insert into parent's childTasks array.
 void editChildTask(NSMutableArray *childList, int childIndex){
@@ -14,9 +15,15 @@ void editChildTask(NSMutableArray *childList, int childIndex){
     NSString *existingDesc = childList[childIndex];
     
     printf("Current description: %s", [existingDesc UTF8String]);
-    printf("Change to:");
+    printf("Change to: ");
     scanf(" ");
     fgets(input, 4096, stdin);
+    
+    if(isQuitChar(input)){
+        printf("Leaving task unchanged.\n");
+        free(input);
+        return;
+    }
     
     if(input!=nil){
         childList[childIndex] = [NSString stringWithUTF8String:input];
@@ -35,6 +42,12 @@ void editParentTask(ParentTask *pTask){
     printf("Change to: ");
     scanf(" ");
     fgets(input, 4096, stdin);
+    
+    if(isQuitChar(input)){
+        printf("Leaving task unchanged.\n");
+        free(input);
+        return;
+    }
     
     if(input!=nil){
         [pTask updateDesc:[NSString stringWithUTF8String:input]];
@@ -55,6 +68,12 @@ void editTaskMenu(NSMutableArray *parentList){
     
     int childIndex = getId(inputString, 'C');
     int parentIndex = getId(inputString, 'P');
+    
+    if(quitChar(childIndex,parentIndex)){
+        printf("Exiting with no chnages.\n");
+        free(input);
+        return;
+    }
     
     if(childIndex == -1){
         parentIndex = atoi(input);

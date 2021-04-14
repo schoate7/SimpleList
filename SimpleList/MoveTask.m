@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ParentTask.h"
+#import "Task.h"
 #import "Common.h"
 
 #define TO_MOVE "Task ID to move: "
@@ -38,11 +38,11 @@ static void parentToParent(NSMutableArray *parentList, int tmParent, int trParen
         printf("There's nothing to do.\n");
     }
     if(parentList.count > trParent && trParent>=0){
-        ParentTask *taskToMove = parentList[tmParent];
+        Task *taskToMove = parentList[tmParent];
         [parentList insertObject:taskToMove atIndex:trParent];
         (tmParent > trParent) ? [parentList removeObjectAtIndex:tmParent+1] : [parentList removeObjectAtIndex:tmParent];
     }else if(parentList.count == trParent && trParent>=0){ //Insert at end if index is list size
-        ParentTask *taskToMove = parentList[tmParent];
+        Task *taskToMove = parentList[tmParent];
         [parentList addObject:taskToMove];
         [parentList removeObjectAtIndex:tmParent];
     }
@@ -50,11 +50,11 @@ static void parentToParent(NSMutableArray *parentList, int tmParent, int trParen
 
 //Make a parent task a child of another parent if parent does not have any child tasks
 static void parentToChild(NSMutableArray *parentList, int tmParent, int trParent, int trChild){
-    ParentTask *parentToMove = parentList[tmParent];
+    Task *parentToMove = parentList[tmParent];
     if(parentToMove.childTasks.count>0){
         printf("Cannot make a parent task with children a child task.\n");
     }else{
-        ParentTask *insertInto = parentList[trParent];
+        Task *insertInto = parentList[trParent];
         NSMutableArray *newChildList = insertInto.childTasks;
         NSString *newChild = parentToMove.taskDesc;
 
@@ -66,12 +66,12 @@ static void parentToChild(NSMutableArray *parentList, int tmParent, int trParent
 //Convert a child task to a parent task
 static void childToParent(NSMutableArray *parentList, NSString *toMove, NSMutableArray *originalChildList, int parentId, int tmChild){
     if(parentList.count > parentId){
-        ParentTask *newPT = [[ParentTask alloc]init];
+        Task *newPT = [[Task alloc]init];
         [newPT getParentTask:toMove];
         [parentList insertObject:newPT atIndex:parentId];
         [originalChildList removeObjectAtIndex:tmChild];
     }else if(parentList.count<=parentId){
-        ParentTask *newPT = [[ParentTask alloc]init];
+        Task *newPT = [[Task alloc]init];
         [newPT getParentTask:toMove];
         [parentList addObject:newPT];
         [originalChildList removeObjectAtIndex:tmChild];
@@ -108,7 +108,7 @@ static void childToOtherChild(NSMutableArray *originalChildList, NSMutableArray 
 
 //Move task, prompts for task IDs, intercepts exit characters, tests for 'end' text, moves tasks throughout list
 void moveTask(NSMutableArray *parentList){
-    ParentTask *pt;
+    Task *pt;
     NSMutableArray *originalChildList;
     NSMutableArray *newChildList;
     NSString *descriptionToMove;

@@ -12,7 +12,7 @@
 void editChildTask(NSMutableArray *childList, int childIndex);
 
 /* editParentTask - Accepts ParentTask as parameter. Displays current description and prompts user for input to update description. */
-void editParentTask(ParentTask *pTask);
+void editParentTask(Task *pTask);
 
 /* editTaskMenu - Accepts NSMutableArray parent list as parameter. Drives main submenu, prompts user for task ID. If regex processed to have a child task, proceed to edit child task. Else, edit parent task. */
 void editTaskMenu(NSMutableArray *parentList);

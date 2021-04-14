@@ -10,7 +10,7 @@
 #define Task_h
 
 /* ParentTask object - Extends NSObject. Contains a task description (NSString) and child task array (NSMutableArray) */
-@interface ParentTask : NSObject <NSSecureCoding>
+@interface Task : NSObject <NSSecureCoding>
 @property (retain) NSString *taskDesc;
 @property (retain) NSMutableArray *childTasks;
 @property (readwrite) BOOL requiresSecureCoding;
@@ -29,6 +29,9 @@
 
 /* initWithCoder - Allows class to be initialized with decoder, sets decoder keys */
 -(id)initWithCoder:(NSCoder *)aDecoder;
+
+/* displayParent - Accepts a parent index ID as paramter, prints task as well as any child tasks */
+-(void)displayParent:(int)indexId;
 
 /* supportsSecureCoding - Return true to NSKeyedArchiver */
 +(BOOL)supportsSecureCoding;

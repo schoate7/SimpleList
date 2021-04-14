@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ParentTask.h"
+#import "Task.h"
 
 //Get logged in user's documents directory.
 NSString* documentsDirectory()
@@ -27,7 +27,7 @@ NSMutableArray* loadArray()
     NSMutableArray *array;
     NSString *path = dataFilePath();
     if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
-        NSSet *classes = [NSSet setWithObjects:[NSMutableArray class], [ParentTask class],nil];
+        NSSet *classes = [NSSet setWithObjects:[NSMutableArray class], [Task class],nil];
         NSError *err=nil;
         NSData *data = [[NSData alloc] initWithContentsOfFile:path];
         NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:data error:&err];

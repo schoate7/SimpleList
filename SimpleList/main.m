@@ -6,7 +6,7 @@
 //
 #import <Foundation/Foundation.h>
 #import <unistd.h>
-#import "ParentTask.h"
+#import "Task.h"
 #import "AddTask.h"
 #import "DeleteTask.h"
 #import "EditTask.h"
@@ -21,7 +21,7 @@ void commandList(){
     printf("-------------------------------\n");
     printf("Command List: \n");
     printf("L - List all active tasks.\n");
-    printf("P - Print a single parent and children.\n");
+    printf("T - Print a single task and children.\n");
     printf("A - Add a task.\n");
     printf("D - Delete a task.\n");
     printf("E - Edit a task.\n");
@@ -35,7 +35,7 @@ void commandList(){
 
 //Main menu function - accept array pointer, loop through and accept user input to drive menu, call appropriate functions.
 void mainMenu(NSMutableArray *parentList, int opt){
-    NSString *charArgs = [NSString stringWithUTF8String:"[LADEMSQP]"];
+    NSString *charArgs = [NSString stringWithUTF8String:"[LADEMSQT]"];
     NSString *argsSave = [NSString stringWithUTF8String:"[ADEM]"];
     char sel = ' ';
     bool quitCd = false;
@@ -68,7 +68,7 @@ void mainMenu(NSMutableArray *parentList, int opt){
             case 'S':
                 saveArray(parentList);
                 break;
-            case 'P':
+            case 'T':
                 viewSingleParent(parentList);
                 break;
             case 'C':
@@ -92,7 +92,7 @@ void mainMenu(NSMutableArray *parentList, int opt){
 }
 
 //Application main - handle arg input for single-command use, 'i' for interactive menu
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]){
     int opt = 0;
     NSMutableArray *parentList = loadArray();
     opt = getopt(argc, argv, "ladempic");

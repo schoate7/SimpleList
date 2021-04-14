@@ -5,7 +5,7 @@
 //  Created by Stephen Choate on 3/16/21.
 //
 #import <Foundation/Foundation.h>
-#import "ParentTask.h"
+#import "Task.h"
 #import "Common.h"
 
 //Define standardized output format string literals for printing list
@@ -13,7 +13,7 @@
 #define CHILD_LABEL "%i.%i: %s"
 
 //ParentTask object
-@implementation ParentTask
+@implementation Task
 
 //Initialize and return a parent task from description and task id
 -(id)getParentTask:(NSString *)desc{
@@ -40,10 +40,23 @@
     [aCoder encodeObject:self.childTasks forKey:@"childtasks"];
 }
 
+//Prints content of self, and any child tasks if existing
+-(void)displayParent:(int)indexId{
+    printf(PARENT_LABEL, indexId, [_taskDesc UTF8String]);
+    if(_childTasks != nil){
+        int childIndex = 1;
+        for(NSString *childDesc in _childTasks){
+            printf(CHILD_LABEL, indexId, childIndex, [childDesc UTF8String]);
+            childIndex++;
+        }
+    }
+    printf("-------------------------------\n");
+}
+
 //Initializes decoder with decode keys
 -(id)initWithCoder:(NSCoder *)aDecoder{
   if(self = [super init]){
-      self = [aDecoder decodeObjectOfClass:[ParentTask class] forKey:@"parenttask"];
+      self = [aDecoder decodeObjectOfClass:[Task class] forKey:@"parenttask"];
       self.taskDesc = [aDecoder decodeObjectOfClass:[NSString class] forKey:@"parenttaskdesc"];
       self.childTasks = [aDecoder decodeObjectOfClass:[NSMutableArray class] forKey:@"childtasks"];
   }
@@ -72,17 +85,11 @@ void viewSingleParent(NSMutableArray *parentList){
     if (parentList.count < index+1 || index < 0){
         printf("Task id not found");
     }else if(parentList[index]!=nil){
-        ParentTask *task = parentList[index];
+        Task *task = parentList[index];
+        printf("\nTask Display:\n");
         printf("-------------------------------\n");
-        printf(PARENT_LABEL, index+1, [task.taskDesc UTF8String]);
-        if(task.childTasks!=nil){
-            int cid = 1;
-            for(NSString *ct in task.childTasks){
-                printf(CHILD_LABEL, index+1, cid, [ct UTF8String]);
-                cid++;
-            }
-            printf("-------------------------------\n");
-        }
+        [task displayParent:index+1];
+
     }else{
         printf("An unknown error occurred.\n");
     }
@@ -94,18 +101,10 @@ void displayTaskList(NSMutableArray *parentList){
     if(parentList.count>0){
         int tid = 1;
         printf("\nActive Tasks:\n");
-        printf("---------------\n");
-        for(ParentTask *task in parentList){
-            printf(PARENT_LABEL, tid, [task.taskDesc UTF8String]);
-            if(task.childTasks!=nil){
-                int cid = 1;
-                for(NSString *ct in task.childTasks){
-                    printf(CHILD_LABEL, tid, cid, [ct UTF8String]);
-                    cid++;
-                }
-            }
+        printf("-------------------------------\n");
+        for(Task *task in parentList){
+            [task displayParent:tid];
             tid++;
-            printf("-------------------------------\n");
         }
         printf("\n");
     }else{

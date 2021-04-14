@@ -5,7 +5,7 @@
 //  Created by Stephen Choate on 3/16/21.
 //
 #import <Foundation/Foundation.h>
-#import "ParentTask.h"
+#import "Task.h"
 #import "Common.h"
 
 #define TASK_PROMPT "Enter Task Description: "
@@ -28,7 +28,7 @@ NSString *getDesc(){
 
 //Add new parent task to main array
 void addParentTask(NSMutableArray *parentList){
-    ParentTask *newTask = [[ParentTask alloc]init];
+    Task *newTask = [[Task alloc]init];
     NSString *tDesc = getDesc();
     if(tDesc == nil){
         printf("Exiting with no chnages.\n");
@@ -45,7 +45,7 @@ void addParentTask(NSMutableArray *parentList){
 
 //Add child task to a parent's child array
 void addChildTask(NSMutableArray *parentList){
-    ParentTask *matchingParent;
+    Task *matchingParent;
     char *input = (char*)malloc(32);
     int pid = 0;
     int cIndex = 0;

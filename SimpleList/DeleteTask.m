@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ParentTask.h"
+#import "Task.h"
 #import "Common.h"
 
 //Prompt for task ID to delete. If a parent, if children exist, prompt to confirm. If a child or parent without children, delete.
@@ -31,7 +31,7 @@ void deleteTask(NSMutableArray *parentList){
         parentIndex = atoi(input);
         parentIndex--;
         if(parentList.count > parentIndex){
-            ParentTask *pt = parentList[parentIndex];
+            Task *pt = parentList[parentIndex];
             if(pt.childTasks.count > 0){
                 NSString *commandArgs = [NSString stringWithUTF8String:"[YN]"];
                 char confirm = getChar("Child tasks detected, confirm delete [Y/N]: ", commandArgs);
@@ -51,7 +51,7 @@ void deleteTask(NSMutableArray *parentList){
     }else if(childIndex != -1 && parentIndex != -1){
         parentIndex--;
         if(parentList.count > parentIndex){
-            ParentTask *parent = parentList[parentIndex];
+            Task *parent = parentList[parentIndex];
             NSMutableArray *childList = parent.childTasks;
             childIndex--;
             if(childList.count > childIndex){

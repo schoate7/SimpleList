@@ -38,8 +38,8 @@ int getId(NSString *input, char type){
             printf("Error: A function is improperly using getId.\n");
         }
     }else if (numberOfMatches == 0 && type == 'P'){
-        NSRegularExpression *isJustParent = [NSRegularExpression regularExpressionWithPattern:@"^[0-9]*$" options:NSRegularExpressionCaseInsensitive error:&err];
-        numberOfMatches = [isJustParent numberOfMatchesInString:input options:0 range:NSMakeRange(0, inLength)];
+        NSRegularExpression *isOnlyParent = [NSRegularExpression regularExpressionWithPattern:@"^[0-9]*$" options:NSRegularExpressionCaseInsensitive error:&err];
+        numberOfMatches = [isOnlyParent numberOfMatchesInString:input options:0 range:NSMakeRange(0, inLength)];
         if (numberOfMatches==1){
             return atoi([input UTF8String]);
         }else if (isQuitChar(qcCheck)){
@@ -51,7 +51,7 @@ int getId(NSString *input, char type){
     return -1;
 }
 
-//Generic function to get a character, ir args exist loop until a match is input, look for escape sequence and return !, return any char if args are nil
+//Generic function to get a character, if args exist loop requesting input until match(upper case) or escape sequence(1) found and return. Return upper case of any character input if args are nil.
 char getChar(char *prompt, NSString *args){
     char *input = (char*)malloc(32);
     char c = ' ';

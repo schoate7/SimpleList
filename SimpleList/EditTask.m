@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ParentTask.h"
+#import "Task.h"
 #import "Common.h"
 
 //Display existing child task description, prompt for replacement string and insert into parent's childTasks array.
@@ -34,7 +34,7 @@ void editChildTask(NSMutableArray *childList, int childIndex){
 }
 
 //Display parent task description from input parameter, prompt for replacement string and insert.
-void editParentTask(ParentTask *pTask){
+void editParentTask(Task *pTask){
     char *input = (char*)malloc(4096);
     NSString *existingDesc = pTask.taskDesc;
 
@@ -87,7 +87,7 @@ void editTaskMenu(NSMutableArray *parentList){
         parentIndex--;
         childIndex--;
         if(parentList.count > parentIndex){
-            ParentTask *pt = parentList[parentIndex];
+            Task *pt = parentList[parentIndex];
             NSMutableArray *cl = pt.childTasks;
             if(cl.count > childIndex){
                 editChildTask(cl,childIndex);

@@ -13,6 +13,7 @@
 @interface Task : NSObject <NSSecureCoding>
 @property (retain) NSString *taskDesc;
 @property (retain) NSMutableArray *childTasks;
+@property (retain) NSString *taskStatus;
 @property (readwrite) BOOL requiresSecureCoding;
 
 /* getParentTask - Accepts NSString description as parameter, returns ParentTask pointer */

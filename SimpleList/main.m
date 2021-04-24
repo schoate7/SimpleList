@@ -13,6 +13,7 @@
 #import "MoveTask.h"
 #import "Common.h"
 #import "FileIO.h"
+#import "Kanban.h"
 
 static bool interactiveMode = false;
 
@@ -26,6 +27,7 @@ void commandList(){
     printf("D - Delete a task.\n");
     printf("E - Edit a task.\n");
     printf("M - Move a task.\n");
+    printf("K - Kanban menu.\n");
     printf("I - Interactive mode (with menu).\n");
     printf("C - Command list (this).\n");
     printf("\"-e\"  - Exit any prompt.\n");
@@ -35,7 +37,7 @@ void commandList(){
 
 //Main menu function - accept array pointer, loop through and accept user input to drive menu, call appropriate functions.
 void mainMenu(NSMutableArray *parentList, int opt){
-    NSString *charArgs = [NSString stringWithUTF8String:"[LADEMSQT]"];
+    NSString *charArgs = [NSString stringWithUTF8String:"[LADEMSQTK]"];
     NSString *argsSave = [NSString stringWithUTF8String:"[ADEM]"];
     char sel = ' ';
     bool quitCd = false;
@@ -74,6 +76,9 @@ void mainMenu(NSMutableArray *parentList, int opt){
             case 'C':
                 (!interactiveMode) ? commandList() : nil;
                 break;
+            case 'K':
+                kanbanMenu(parentList);
+                break;
             case 'Q': case '!':
                 printf("Goodbye!\n");
                 break;
@@ -95,10 +100,8 @@ void mainMenu(NSMutableArray *parentList, int opt){
 int main(int argc, char *argv[]){
     int opt = 0;
     NSMutableArray *parentList = loadArray();
-    opt = getopt(argc, argv, "ladempic");
-    if(opt == 'i'){
-        interactiveMode = true;
-    }
+    opt = getopt(argc, argv, "ladempick");
+    interactiveMode = (opt == 'i');
     mainMenu(parentList, opt);
     return 0;
 }

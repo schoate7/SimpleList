@@ -65,14 +65,12 @@ static void parentToChild(NSMutableArray *parentList, int tmParent, int trParent
 
 //Convert a child task to a parent task
 static void childToParent(NSMutableArray *parentList, NSString *toMove, NSMutableArray *originalChildList, int parentId, int tmChild){
+    Task *newPT = [[Task alloc]init];
+    [newPT getParentTask:toMove];
     if(parentList.count > parentId){
-        Task *newPT = [[Task alloc]init];
-        [newPT getParentTask:toMove];
         [parentList insertObject:newPT atIndex:parentId];
         [originalChildList removeObjectAtIndex:tmChild];
     }else if(parentList.count<=parentId){
-        Task *newPT = [[Task alloc]init];
-        [newPT getParentTask:toMove];
         [parentList addObject:newPT];
         [originalChildList removeObjectAtIndex:tmChild];
     }

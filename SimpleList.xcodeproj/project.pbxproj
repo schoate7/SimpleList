@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6E0BD8572611F50500D00893 /* EditTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E0BD8562611F50500D00893 /* EditTask.m */; };
+		6E5421E426339A8300C9A62A /* Kanban.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E5421E326339A8300C9A62A /* Kanban.m */; };
 		6E7107D42604365700871EC9 /* DeleteTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E7107D32604365700871EC9 /* DeleteTask.m */; };
 		6E7107DA26057F8A00871EC9 /* FileIO.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E7107D926057F8A00871EC9 /* FileIO.m */; };
 		6E7107E02606CB8200871EC9 /* MoveTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E7107DF2606CB8200871EC9 /* MoveTask.m */; };
@@ -32,6 +33,8 @@
 /* Begin PBXFileReference section */
 		6E0BD8552611F4D600D00893 /* EditTask.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EditTask.h; sourceTree = "<group>"; };
 		6E0BD8562611F50500D00893 /* EditTask.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EditTask.m; sourceTree = "<group>"; };
+		6E5421E326339A8300C9A62A /* Kanban.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Kanban.m; sourceTree = "<group>"; };
+		6E5421E626339A8D00C9A62A /* Kanban.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Kanban.h; sourceTree = "<group>"; };
 		6E7107D32604365700871EC9 /* DeleteTask.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DeleteTask.m; sourceTree = "<group>"; };
 		6E7107D62604366500871EC9 /* DeleteTask.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeleteTask.h; sourceTree = "<group>"; };
 		6E7107D926057F8A00871EC9 /* FileIO.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FileIO.m; sourceTree = "<group>"; };
@@ -85,6 +88,7 @@
 				6E7107D32604365700871EC9 /* DeleteTask.m */,
 				6E0BD8562611F50500D00893 /* EditTask.m */,
 				6E7107DF2606CB8200871EC9 /* MoveTask.m */,
+				6E5421E326339A8300C9A62A /* Kanban.m */,
 				6EEC88AF261E8EFC00AADFE8 /* Common.m */,
 				6E7107D926057F8A00871EC9 /* FileIO.m */,
 				6EDD33C92601B4BF00B9CDF4 /* Task.h */,
@@ -92,6 +96,7 @@
 				6E7107D62604366500871EC9 /* DeleteTask.h */,
 				6E0BD8552611F4D600D00893 /* EditTask.h */,
 				6E7107E22606CB9100871EC9 /* MoveTask.h */,
+				6E5421E626339A8D00C9A62A /* Kanban.h */,
 				6EEC88B2261E8F0D00AADFE8 /* Common.h */,
 				6E7107DC260581BA00871EC9 /* FileIO.h */,
 			);
@@ -165,6 +170,7 @@
 				6EDD33C726017FD000B9CDF4 /* AddTask.m in Sources */,
 				6EDD33BC26016AA300B9CDF4 /* main.m in Sources */,
 				6E7107E02606CB8200871EC9 /* MoveTask.m in Sources */,
+				6E5421E426339A8300C9A62A /* Kanban.m in Sources */,
 				6EEC88B0261E8EFC00AADFE8 /* Common.m in Sources */,
 				6E7107D42604365700871EC9 /* DeleteTask.m in Sources */,
 				6E0BD8572611F50500D00893 /* EditTask.m in Sources */,

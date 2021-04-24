@@ -19,6 +19,7 @@
 -(id)getParentTask:(NSString *)desc{
     self.taskDesc = desc;
     self.childTasks = [[NSMutableArray alloc]init];
+    self.taskStatus = [NSString stringWithUTF8String:"To-Do"];
     self.requiresSecureCoding = YES;
     return self;
 }
@@ -38,6 +39,7 @@
     [aCoder encodeObject:self forKey:@"parenttask"];
     [aCoder encodeObject:self.taskDesc forKey:@"parenttaskdesc"];
     [aCoder encodeObject:self.childTasks forKey:@"childtasks"];
+    [aCoder encodeObject:self.taskStatus forKey:@"taskstatus"];
 }
 
 //Prints content of self, and any child tasks if existing
@@ -59,6 +61,7 @@
       self = [aDecoder decodeObjectOfClass:[Task class] forKey:@"parenttask"];
       self.taskDesc = [aDecoder decodeObjectOfClass:[NSString class] forKey:@"parenttaskdesc"];
       self.childTasks = [aDecoder decodeObjectOfClass:[NSMutableArray class] forKey:@"childtasks"];
+      self.taskStatus = [aDecoder decodeObjectOfClass:[NSString class] forKey:@"taskstatus"];
   }
   return self;
 }

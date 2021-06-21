@@ -11,7 +11,7 @@
 #define TASK_PROMPT "Enter Task Description: "
 
 //Re-usable function to get task description for either parent or child, return NSString pointer
-NSString *getDesc(){
+NSString *getDesc(void){
     char* usrIn = (char*)malloc(4096);
     printf("%s", TASK_PROMPT);
     scanf(" ");

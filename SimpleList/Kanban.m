@@ -54,32 +54,41 @@ void setStatus(NSMutableArray *parentList){
 
 void displayBoard(NSMutableArray *parentList){
     int i = 0;
+    int tid = 1;
     NSArray *taskStatuses = @[@"To-Do", @"Doing", @"Done"];
-    printf("\nTo-Do:");
+    printf("\nTo-Do:\n");
     for(Task *tsk in parentList){
         if ([tsk.taskStatus isEqualTo:taskStatuses[0]]){
-            printf("\n%s", [tsk.taskDesc UTF8String]);
+            printf("%i: %s", tid, [tsk.taskDesc UTF8String]);
             i++;
         }
+        tid++;
     }
     lineHandler(i);
+    tid = 1;
+    
     printf("-------------------------------\n");
-    printf("Doing:");
+    printf("Doing:\n");
     for(Task *tsk in parentList){
         if([tsk.taskStatus isEqualTo:taskStatuses[1]]){
-            printf("\n%s", [tsk.taskDesc UTF8String]);
+            printf("%i: %s", tid, [tsk.taskDesc UTF8String]);
             i++;
         }
+        tid++;
     }
     lineHandler(i);
+    tid = 1;
+    
     printf("-------------------------------\n");
-    printf("Done:");
+    printf("Done:\n");
     for(Task *tsk in parentList){
         if([tsk.taskStatus isEqualTo:taskStatuses[2]]){
-            printf("\n%s", [tsk.taskDesc UTF8String]);
+            printf("%i: %s", tid, [tsk.taskDesc UTF8String]);
             i++;
         }
+        tid++;
     }
+    
     lineHandler(i);
     printf("-------------------------------\n");
 }

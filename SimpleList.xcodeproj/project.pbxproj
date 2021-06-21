@@ -136,7 +136,7 @@
 		6EDD33B026016AA300B9CDF4 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1240;
+				LastUpgradeCheck = 1250;
 				TargetAttributes = {
 					6EDD33B726016AA300B9CDF4 = {
 						CreatedOnToolsVersion = 12.4;
@@ -297,6 +297,7 @@
 		6EDD33C026016AA300B9CDF4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				GCC_NO_COMMON_BLOCKS = NO;
 				OTHER_LDFLAGS = "-ObjC";
@@ -307,6 +308,7 @@
 		6EDD33C126016AA300B9CDF4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				GCC_NO_COMMON_BLOCKS = NO;
 				OTHER_LDFLAGS = "-ObjC";

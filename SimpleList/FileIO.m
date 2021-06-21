@@ -9,20 +9,20 @@
 #import "Task.h"
 
 //Get logged in user's documents directory.
-NSString* documentsDirectory()
+NSString* documentsDirectory(void)
 {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     return paths[0];
 }
 
 //Get data file path for read/write.
-NSString* dataFilePath()
+NSString* dataFilePath(void)
 {
     return [documentsDirectory() stringByAppendingPathComponent:@"taskListFile.plist"];
 }
 
 //Load array from file, check for errors. If successful, return pointer to array, else, initialize and return a blank array.
-NSMutableArray* loadArray()
+NSMutableArray* loadArray(void)
 {
     NSMutableArray *array;
     NSString *path = dataFilePath();

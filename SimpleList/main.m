@@ -15,10 +15,14 @@
 #import "FileIO.h"
 #import "Kanban.h"
 
+#define charArgs @"[LADEMSQTK]"
+#define argsSave @"[ADEM]"
+#define optArgs "ladempick"
+
 static bool interactiveMode = false;
 
 //Function to print list of accepted command line arguments to user
-void commandList(){
+void commandList(void){
     printf("-------------------------------\n");
     printf("Command List: \n");
     printf("L - List all active tasks.\n");
@@ -37,8 +41,6 @@ void commandList(){
 
 //Main menu function - accept array pointer, loop through and accept user input to drive menu, call appropriate functions.
 void mainMenu(NSMutableArray *parentList, int opt){
-    NSString *charArgs = [NSString stringWithUTF8String:"[LADEMSQTK]"];
-    NSString *argsSave = [NSString stringWithUTF8String:"[ADEM]"];
     char sel = ' ';
     bool quitCd = false;
     if(interactiveMode){
@@ -100,7 +102,7 @@ void mainMenu(NSMutableArray *parentList, int opt){
 int main(int argc, char *argv[]){
     int opt = 0;
     NSMutableArray *parentList = loadArray();
-    opt = getopt(argc, argv, "ladempick");
+    opt = getopt(argc, argv, optArgs);
     interactiveMode = (opt == 'i');
     mainMenu(parentList, opt);
     return 0;

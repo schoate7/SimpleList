@@ -1,5 +1,5 @@
 //
-//  Kanban.h
+//  Kanban.h - A Kanban board feature to display task status. Contains menu driver, board display, and status set functions.
 //  SimpleList
 //
 //  Created by Stephen Choate on 4/23/21.

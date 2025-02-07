@@ -70,7 +70,7 @@ void editTaskMenu(NSMutableArray *parentList){
     int parentIndex = getId(inputString, 'P');
     
     if(quitChar(childIndex,parentIndex)){
-        printf("Exiting with no chnages.\n");
+        printf("Exiting with no changes.\n");
         free(input);
         return;
     }
